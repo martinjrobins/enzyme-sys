@@ -1,8 +1,18 @@
 [package]
 name = "enzyme-sys"
+authors = ["Martin Robinson <martinjrobins@gmail.com>"]
+description = "sys crate for Enzyme AD C api."
+repository = "https://github.com/martinjrobins/enzyme-sys"
+keywords = ["llvm", "enzyme"]
 version = "0.1.0"
+categories = ["development-tools::ffi"]
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+readme = "README.md"
+license = "MIT"
 
 [dependencies]
+llvm-sys = { version = "140.0.2" }
+
+[build-dependencies]
+bindgen = "0.69.4"
+cmake = "0.1.50"
