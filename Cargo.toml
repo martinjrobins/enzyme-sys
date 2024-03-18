@@ -11,7 +11,7 @@ readme = "README.md"
 license = "MIT"
 
 [dependencies]
-llvm-sys = { version = "140.0.2" }
+llvm-sys = { version = "*" }
 
 [build-dependencies]
 bindgen = "0.69.4"
