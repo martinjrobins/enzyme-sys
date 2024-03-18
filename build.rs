@@ -101,6 +101,8 @@ fn main() {
     // compile enzyme
     let libdir= compile_enzyme(llvm_dir);
     println!("cargo:libdir={}", libdir); // DEP_ENZYME_SYS_LIBDIR
+    println!("cargo:rustc-link-search=native={}", libdir);
+
     
     // Generate bindings (remove for now)
     //let inc_dir = format!("{}/Enzyme/enzyme", env::var("CARGO_MANIFEST_DIR").unwrap());
