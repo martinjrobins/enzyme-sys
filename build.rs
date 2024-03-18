@@ -1,16 +1,15 @@
 use std::{env, fs, path::PathBuf};
 
-fn compile_enzyme(llvm_dir: String) -> (String, String) {
+fn compile_enzyme(llvm_dir: String) -> String {
     let dst = cmake::Config::new("Enzyme/enzyme")
         .define("LLVM_DIR", llvm_dir)
         .build();
     let dst_disp = dst.display();
     let lib_loc = format!("{}/lib", dst_disp);
-    let inc_dir = format!("{}/include", dst_disp);
-    (lib_loc, inc_dir)
+    lib_loc
 }
 
-fn generate_bindings(inc_dir: String) -> Result<(), String> {
+fn _generate_bindings(inc_dir: String) -> Result<(), String> {
     let header_path = PathBuf::from(inc_dir.as_str()).join("Enzyme/CApi.h");
     dbg!(&header_path);
 
@@ -91,12 +90,19 @@ fn generate_bindings(inc_dir: String) -> Result<(), String> {
 }
 
 fn main() {
-    let llvm_dir = env::var("DEP_LLVM_LIBDIR").expect("DEP_LLVM_LIBDIR not set");
-    let _llvm_config = env::var("DEP_LLVM_CONFIG_PATH").expect("DEP_LLVM_CONFIG_PATH not set");
+    println!("all env vars: {:?}", env::vars().collect::<Vec<(String, String)>>());
+    // get env vars matching DEP_LLVM_*_LIBDIR regex    
+    let llvm_dirs: Vec<_> = env::vars().filter(|(k, _)| k.starts_with("DEP_LLVM_") && k.ends_with("_LIBDIR")).collect();
+    // take first one
+    let llvm_dir = llvm_dirs.first().expect("DEP_LLVM_*_LIBDIR not set").1.clone();
+
+    dbg!("llvm_dir", &llvm_dir);
     
     // compile enzyme
-    let (_lib_loc, inc_dir) = compile_enzyme(llvm_dir);
+    let libdir= compile_enzyme(llvm_dir);
+    println!("cargo:libdir={}", libdir); // DEP_ENZYME_SYS_LIBDIR
     
-    // Generate bindings
-    generate_bindings(inc_dir).unwrap();
+    // Generate bindings (remove for now)
+    //let inc_dir = format!("{}/Enzyme/enzyme", env::var("CARGO_MANIFEST_DIR").unwrap());
+    //generate_bindings(inc_dir).unwrap();
 }
